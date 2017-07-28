@@ -14,8 +14,12 @@ node {
   }
   stage('Run Onceover Tests') {
     // Run the onceover tests
-    sh '''source /usr/local/rvm/scripts/rvm && ./bin/onceover run spec'''
-    junit '.onceover/spec.xml'
+    try {
+      sh '''source /usr/local/rvm/scripts/rvm && ./bin/onceover run spec'''
+    } catch (error) {
+      junit '.onceover/spec.xml'
+      throw error
+    }
   }
   stage('Deploy Code') {
     echo env.BRANCH_NAME
